@@ -40,6 +40,14 @@ yum -y install MariaDB-server MariaDB-client
 yum -y install lsphp72 lsphp72-common lsphp72-mysqlnd lsphp72-process lsphp72-gd lsphp72-mbstring \
 lsphp72-mcrypt lsphp72-opcache lsphp72-bcmath lsphp72-pdo lsphp72-xml lsphp72-json lsphp72-zip lsphp72-xmlrpc lsphp72-pecl-mcrypt
 
+# Install PHP 73
+yum -y install lsphp73 lsphp73-common lsphp73-mysqlnd lsphp73-process lsphp73-gd lsphp73-mbstring \
+lsphp73-mcrypt lsphp73-opcache lsphp73-bcmath lsphp73-pdo lsphp73-xml lsphp73-json lsphp73-zip lsphp73-xmlrpc lsphp73-pecl-mcrypt
+
+# Install PHP 74
+yum -y install lsphp74 lsphp74-common lsphp74-mysqlnd lsphp74-process lsphp74-gd lsphp74-mbstring \
+lsphp74-mcrypt lsphp74-opcache lsphp74-bcmath lsphp74-pdo lsphp74-xml lsphp74-json lsphp74-zip lsphp74-xmlrpc lsphp74-pecl-mcrypt
+
 #Setting Up
 touch $LSWSDIR/domain
 mv -f $LSWSDIR/conf/vhosts/Example/ $LSWSDIR/conf/vhosts/defdomain/
@@ -85,14 +93,14 @@ mkdir $LSWSDIR/conf/cert/pma
 touch $LSWSDIR/pma/logs/error.log
 touch $LSWSDIR/pma/logs/access.log
 wget -O $LSWSDIR/conf/vhosts/pma/vhconf.conf $GITRAW/conf/pma_vhconf.conf
-wget --no-check-certificate -O $LSWSDIR/pma/html/pma.tar.gz https://files.phpmyadmin.net/phpMyAdmin/4.8.2/phpMyAdmin-4.8.2-english.tar.gz
+wget --no-check-certificate -O $LSWSDIR/pma/html/pma.tar.gz https://files.phpmyadmin.net/phpMyAdmin/5.0.2/phpMyAdmin-5.0.2-all-languages.zip
 cd $LSWSDIR/pma/html/
 tar -xzvf pma.tar.gz
-mv phpMyAdmin-4.8.2-english/* ./
+mv phpMyAdmin-5.0.2-all-languages/* ./
 wget -O config.inc.php $GITRAW/conf/config.inc.php
 sed -i "s/#BLOWFISH#/$PMABLOWFISH/g" config.inc.php
 mkdir tmp
-rm -f pma.tar.gz && rm -rf phpMyAdmin-4.8.2-english
+rm -f pma.tar.gz && rm -rf phpMyAdmin-5.0.2-all-languages
 cd /
 chown -R lsadm:lsadm $LSWSDIR/pma/
 
@@ -130,7 +138,14 @@ $ROOTSQLPWD
 EOT
 
 # Create PHP symlink
-ln -s /usr/local/lsws/lsphp72/bin/lsphp /usr/bin/php
+ln -s /usr/local/lsws/lsphp72/bin/lsphp /usr/bin/php72
+ln -s /usr/local/lsws/lsphp73/bin/lsphp /usr/bin/php73
+ln -s /usr/local/lsws/lsphp74/bin/lsphp /usr/bin/php74
+
+# Install WP-CLI
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+chmod +x wp-cli.phar
+sudo mv wp-cli.phar /usr/local/bin/wp
 
 systemctl enable proftpd
 systemctl enable mariadb
